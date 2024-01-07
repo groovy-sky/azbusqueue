@@ -53,6 +53,8 @@ func (bus *busCLI) readMessage(queue string) (message azservicebus.ReceivedMessa
 	if err != nil {
 		if err != context.DeadlineExceeded {
 			log.Fatal(err)
+		} else {
+			return message, nil
 		}
 	}
 
@@ -65,7 +67,7 @@ func (bus *busCLI) readMessage(queue string) (message azservicebus.ReceivedMessa
 }
 
 // Send message from queue
-func (bus *busCLI) sendMessage(queue string, message string, subject string, replyTo string) (err error) {
+func (bus *busCLI) sendMessage(queue, message, subject, replyTo string) (err error) {
 
 	// Create context
 	ctx := context.Background()
@@ -80,7 +82,9 @@ func (bus *busCLI) sendMessage(queue string, message string, subject string, rep
 
 	// Create a message
 	busMessage := &azservicebus.Message{
-		Body: []byte(message),
+		Body:    []byte(message),
+		ReplyTo: &replyTo,
+		Subject: &subject,
 	}
 
 	// Send the message
@@ -106,6 +110,8 @@ type CLI struct {
 
 func main() {
 	var bus busCLI
+	var err error
+	var message azservicebus.ReceivedMessage
 
 	rootCmd := &cobra.Command{
 		Use:   "service-bus-explorer",
@@ -116,7 +122,7 @@ func main() {
 		Use:   "send",
 		Short: "Send message to queue",
 		Run: func(cmd *cobra.Command, args []string) {
-			err := bus.Init()
+			err = bus.Init()
 			if err != nil {
 				log.Fatal("Failed to initialize client: ", err)
 			}
@@ -129,6 +135,8 @@ func main() {
 			err = bus.sendMessage(queueName, message, subject, replyTo)
 			if err != nil {
 				log.Fatal("Failed to send message: ", err)
+			} else {
+				fmt.Println("Message sent successfully")
 			}
 		},
 	}
@@ -151,12 +159,15 @@ func main() {
 
 			queueName, _ := cmd.Flags().GetString("queue")
 
-			message, err := bus.readMessage(queueName)
+			message, err = bus.readMessage(queueName)
 			if err != nil {
 				log.Fatal("Failed to read message: ", err)
 			}
 
-			log.Print(string(message.Body))
+			if message.Body != nil {
+				fmt.Println(string(message.Body))
+			}
+
 		},
 	}
 
@@ -166,7 +177,7 @@ func main() {
 	rootCmd.AddCommand(sendCmd)
 	rootCmd.AddCommand(readCmd)
 
-	if err := rootCmd.Execute(); err != nil {
+	if err = rootCmd.Execute(); err != nil {
 		log.Fatal("Failed to execute command: ", err)
 	}
 }

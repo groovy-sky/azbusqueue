@@ -96,6 +96,7 @@ func (bus *busCLI) sendMessage(queue, message, subject, replyTo string) (err err
 	return err
 }
 
+// CLI struct for cobra
 type CLI struct {
 	Send struct {
 		QueueName string `arg:"" name:"queue" help:"Queue name,omitempty"`

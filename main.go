@@ -115,8 +115,8 @@ func main() {
 	var message azservicebus.ReceivedMessage
 
 	rootCmd := &cobra.Command{
-		Use:   "service-bus-explorer",
-		Short: "CLI tool for Azure Service Bus",
+		Use:   "service-bus-queue-cli",
+		Short: "CLI tool for Azure Service Bus Queue",
 	}
 
 	sendCmd := &cobra.Command{
@@ -160,19 +160,27 @@ func main() {
 
 			queueName, _ := cmd.Flags().GetString("queue")
 
+			outputFormat, _ := cmd.Flags().GetString("output")
+
 			message, err = bus.readMessage(queueName)
 			if err != nil {
 				log.Fatal("Failed to read message: ", err)
 			}
 
-			if message.Body != nil {
+			// Print message. Default output format is tsv, which returns only message body. JSON returns Body, Subject and ReplyTo fields
+			switch outputFormat {
+			case "tsv":
 				fmt.Println(string(message.Body))
+			case "json":
+				fmt.Printf("{\n\"body\": \"%s\",\n\"subject\": \"%s\",\n\"replyto\": \"%s\"\n}\n", string(message.Body), *message.Subject, *message.ReplyTo)
+			default:
+				fmt.Println(message)
 			}
-
 		},
 	}
 
 	readCmd.Flags().StringP("queue", "q", "", "Queue name")
+	readCmd.Flags().StringP("output", "o", "tsv", "Output format")
 	readCmd.MarkFlagRequired("queue")
 
 	rootCmd.AddCommand(sendCmd)

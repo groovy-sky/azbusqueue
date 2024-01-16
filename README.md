@@ -1,19 +1,21 @@
-# Azure Service Queue CLI
+# Azure Service Bus Queue CLI
 
 ![](logo.svg)
 
 ## Introduction
-This Go package provides a command-line interface (CLI) tool for interacting with Azure Service Bus. It allows you to send/receive messages from/to a queue. 
+This Go package provides a simple command-line interface (CLI) tool for interacting with [Azure Service Bus Queue](https://azure.microsoft.com/en-us/products/service-bus). It allows you to send/receive messages from/to a queue. 
 
 ## Installation
 
 If you want to try out the tool, you'll need to:
 1. Deploy Azure Service Bus and create a queue.
-2. Open Azure Cloud Shell and execute command below.
+2. Install the tool.
+
+Easiest way how-to do that is to use the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) and run the following commands:
 
 ```
-go install github.com/groovy-sky/service-bus-queue-cliv2@latest
-export PATH="$HOME/go/bin:$PATH"
+
+
 ```
 
 ## Usage

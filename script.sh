@@ -20,6 +20,8 @@ go install github.com/groovy-sky/azbusqueue/v2@latest
 export PATH="$HOME/go/bin:$PATH"
 alias sb="azbusqueue"
 
-echo "[INF] Testing message sending/receiving through $sbQueueName queue"
+echo "[INF] Testing message sending"
 sb send --queue $sbQueueName --message "Azure Service Bus $sbName has been successfully created and configured. This message has been sent through $sbQueueName queue."
+
+echo "[INF] Testing message recieving"
 sb recieve --queue $sbQueueName

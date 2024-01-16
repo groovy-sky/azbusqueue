@@ -11,11 +11,12 @@ If you want to try out the tool, you'll need to:
 1. Deploy Azure Service Bus and create a queue.
 2. Install the tool.
 
-Easiest way how-to do that is to use the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) and run the following commands:
+Easiest way how-to do that is to use the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) and execute [script.sh](script.sh) file:
 
 ```
-
-
+wget https://raw.githubusercontent.com/groovy-sky/service-bus-queue-cli/main/script.sh
+chmod +x script.sh
+./script.sh
 ```
 
 ## Usage
@@ -40,3 +41,4 @@ To receive a message from a queue:
 service-bus-queue-cli read --queue your-queue-name
 ```
 
+## Why

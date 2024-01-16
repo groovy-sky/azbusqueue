@@ -1,4 +1,4 @@
-module github.com/groovy-sky/service-bus-queue-cli/v2
+module github.com/groovy-sky/azbusqueue/v2
 
 go 1.18
 

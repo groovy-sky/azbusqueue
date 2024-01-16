@@ -104,9 +104,9 @@ type CLI struct {
 		Subject   string `arg optional name:"subject" help:"Subject of message"`
 		ReplyTo   string `arg optional name:"replyto" help:"ReplyTo of message"`
 	} `cmd:"" help:"Send message to queue"`
-	Read struct {
+	Recieve struct {
 		QueueName string `arg:"" name:"queue" help:"Queue name"`
-	} `cmd:"" help:"Read message from queue"`
+	} `cmd:"" help:"recieve message from queue"`
 }
 
 func main() {
@@ -115,7 +115,7 @@ func main() {
 	var message azservicebus.ReceivedMessage
 
 	rootCmd := &cobra.Command{
-		Use:   "service-bus-queue-cli",
+		Use:   "busq",
 		Short: "CLI tool for Azure Service Bus Queue",
 	}
 
@@ -149,9 +149,9 @@ func main() {
 	sendCmd.MarkFlagRequired("queue")
 	sendCmd.MarkFlagRequired("message")
 
-	readCmd := &cobra.Command{
-		Use:   "read",
-		Short: "Read message from queue",
+	recieveCmd := &cobra.Command{
+		Use:   "recieve",
+		Short: "Recieve message from queue",
 		Run: func(cmd *cobra.Command, args []string) {
 			err := bus.Init()
 			if err != nil {
@@ -179,12 +179,12 @@ func main() {
 		},
 	}
 
-	readCmd.Flags().StringP("queue", "q", "", "Queue name")
-	readCmd.Flags().StringP("output", "o", "tsv", "Output format")
-	readCmd.MarkFlagRequired("queue")
+	recieveCmd.Flags().StringP("queue", "q", "", "Queue name")
+	recieveCmd.Flags().StringP("output", "o", "tsv", "Output format")
+	recieveCmd.MarkFlagRequired("queue")
 
 	rootCmd.AddCommand(sendCmd)
-	rootCmd.AddCommand(readCmd)
+	rootCmd.AddCommand(recieveCmd)
 
 	if err = rootCmd.Execute(); err != nil {
 		log.Fatal("Failed to execute command: ", err)

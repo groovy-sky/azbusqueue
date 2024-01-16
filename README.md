@@ -32,13 +32,13 @@ After that you can use the tool to send/receive messages from/to a queue.
 To send a message(subject and reply-to are optional):
 
 ``` 
-service-bus-queue-cli send --queue your-queue-name --message "Your message" --subject "Your subject" --replyto "Your reply-to"
+azbusqueue send --queue your-queue-name --message "Your message" --subject "Your subject" --replyto "Your reply-to"
 ```
 
 To receive a message from a queue:
 
 ```
-service-bus-queue-cli read --queue your-queue-name
+azbusqueue read --queue your-queue-name
 ```
 
 ## Why

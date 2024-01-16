@@ -15,11 +15,11 @@ az servicebus queue create --resource-group $rgName --namespace-name $sbName --n
 echo "[INF] Granting access and storing it in AZURE_SERVICEBUS_CONNECTION_STRING"
 export AZURE_SERVICEBUS_CONNECTION_STRING=$(az servicebus namespace authorization-rule keys list --resource-group $rgName --namespace-name $sbName --name RootManageSharedAccessKey --query primaryConnectionString --output tsv)
 
-echo "[INF] Installing service-bus-queue-cli"
-go install github.com/groovy-sky/service-bus-queue-cli/v2@latest
+echo "[INF] Installing Go package"
+go install github.com/groovy-sky/azbusqueue/v2@latest
 export PATH="$HOME/go/bin:$PATH"
-alias sb="service-bus-queue-cli"
+alias sb="azbusqueue"
 
 echo "[INF] Testing message sending/receiving through $sbQueueName queue"
 sb send --queue $sbQueueName --message "Azure Service Bus $sbName has been successfully created and configured. This message has been sent through $sbQueueName queue."
-sb read --queue $sbQueueName
+sb recieve --queue $sbQueueName

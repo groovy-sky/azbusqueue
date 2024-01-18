@@ -1,0 +1,85 @@
+# Following Github Actions builds and releases Golang package github.com/groovy-sky/azbusqueue/v2
+# for Linux and Windows architectures
+# and publishes it to Github Releases
+
+name: Build and Release
+
+on:
+  push:
+    tags: ["v*"]
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      
+env:
+  PKG_NAME: "azbusqueue"
+  PKG_VER:  "${GITHUB_REF##*/}"
+  OUTPUT_DIR: out
+
+jobs:
+
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: ["linux","windows"]
+        goarch: ["arm", "arm64", "386", "amd64"]
+        go: ["^1.18.1"]
+      fail-fast: true
+
+    name: Go ${{ matrix.go }} ${{ matrix.goos }} ${{ matrix.goarch }} build
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Build 
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
+        run: |
+          echo ${{ env.PKG_VER }}
+          mkdir ${{ env.OUTPUT_DIR }}
+          OUTPUT_PATH="${{ env.OUTPUT_DIR }}/${{ env.PKG_NAME }}_${{ env.PKG_VER }}_${{ matrix.goos }}_${{ matrix.goarch }}" make build
+
+      - name: Upload result
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.PKG_NAME }}
+          path: ${{ env.OUTPUT_DIR }}/
+
+  create-release:
+    needs:
+      - build-linux
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.PKG_NAME }}
+          path: ${{ github.workspace }}/${{ env.PKG_NAME }}
+
+      - name: Archive release files
+        run: |
+          zip -jrm ${{ env.PKG_NAME }}.zip ${{ env.PKG_NAME }}/
+
+      - name: Create release
+        if: github.event_name != 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          release=${{ env.PKG_NAME }}.zip
+          tag="${{ env.PKG_VER }}"
+          hub release create -a "${release}" -m "${tag}" "${tag}"

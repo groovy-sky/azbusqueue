@@ -16,7 +16,7 @@ on:
       
 env:
   PKG_NAME: "azbusqueue"
-  PKG_VER:  "${GITHUB_REF##*/}"
+  PKG_VER:  "${GITHUB_REF#refs/tags/}"
   OUTPUT_DIR: out
 
 jobs:

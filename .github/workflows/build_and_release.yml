@@ -83,5 +83,4 @@ jobs:
         run: |
           release=${{ env.PKG_NAME }}.zip
           tag="${{ env.PKG_VER }}"
-          gh release upload -R -t "${tag}" -n "${tag}" "${release}"
-          gh release create -R -t "${tag}" -n "${tag}" "${tag}"
+          gh release upload "${tag}" "${release}"

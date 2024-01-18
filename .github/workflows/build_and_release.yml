@@ -83,4 +83,4 @@ jobs:
         run: |
           release=${{ env.PKG_NAME }}.zip
           tag="${{ env.PKG_VER }}"
-          hub release create -a "${release}" -m "${tag}" "${tag}"
+          gh release create -a "${release}" -m "${tag}" "${tag}"

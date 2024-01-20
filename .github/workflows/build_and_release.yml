@@ -83,6 +83,6 @@ jobs:
         run: |
           release=${{ env.PKG_NAME }}.zip
           tag="${{ env.PKG_VER }}"
-          gh release create "${tag} --notes "${release}"
+          gh release create "${tag}" --notes "${release}"
           ls -la
           gh release upload "${tag}" "${release}"
